@@ -1,6 +1,6 @@
 # mathSemDFT
 
-This code generates an animation generating the parametric fourier series for an image
+This code creates an animation generating the parametric fourier series from a csv of points.
 
 Steps:
 1. Download animate.py into a secure directory where you have python access
