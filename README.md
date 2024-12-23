@@ -8,6 +8,7 @@ Steps:
 4. Run animate.py
 
 Framerate can be modified on line 111, it is set to 75 ms by default
+
 Website for Points: https://spotify.github.io/coordinator/
 
 Examples:
