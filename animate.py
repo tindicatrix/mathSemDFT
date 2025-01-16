@@ -69,14 +69,15 @@ xCoses = DFT(xPoints,t)[1] #finds every cos term for x(t)
 tVals = np.linspace(1,samples,10000) #parameteric t-values for plotting purposes
 
 #axes
-xmin = np.min(xPoints)-np.mean(xPoints)/10
+#sets axes for the graph constant between each frame and slightly larger than the image itself
+xmin = np.min(xPoints)-np.mean(xPoints)/10 
 xmax = np.max(xPoints)+np.mean(xPoints)/10
 ymin = np.min(yPoints)-np.mean(yPoints)/10
 ymax = np.max(yPoints)+np.mean(yPoints)/10
 
 totalTerms = len(xSins)+1
 
-def makeImg(numterms):
+def makeImg(numterms): #saves each frame 
   plt.axis([xmin,xmax,ymin,ymax])
   plt.title(f'number of terms = {numterms}')
   plt.plot(fourier(tVals,xSins,xCoses,xPoints,numterms),fourier(tVals,ySins,yCoses,yPoints,numterms))
