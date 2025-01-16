@@ -12,61 +12,61 @@ if not os.path.exists(saveDirectory): #make folder if doesn't exist
 #direct link from https://sites.google.com/site/gdocs2direct/, csv file
 url = 'https://drive.google.com/uc?export=download&id=1ith3awBE8vTcpVGo6o3SVQj2aZhW5f4o' #raymond's
 
-try:
+try: #try to convert csv of ordered pairs into a numpy array
   reader = pd.read_csv(url)
   ar = reader.to_numpy()
 except:
   print("Error")
 
-xPoints = ar[:,0]
-yPoints = ar[:,1]
+xPoints = ar[:,0] #seperates the x values into its own array
+yPoints = ar[:,1] #seperates the y values into its own array
 
-if len(xPoints)==len(yPoints):
-  samples = len(xPoints)
-  t = np.linspace(1,samples,samples)
+if len(xPoints)==len(yPoints): #makes sure that each x has a y
+  samples = len(xPoints)       
+  t = np.linspace(1,samples,samples) #creates an array of parameter variable t with [sample] points from 1 to [sample]
 else:
   print("Error")
 
-L = samples
+L = samples #define 1 wavelength
 
 #DFT built from scratch
 
-def sinDFT(y,t,n):
-  comparisonValues = np.sin(n*t*2*np.pi/L)
-  dotprod = np.dot(y,comparisonValues)
-  norm = np.dot(comparisonValues,comparisonValues)
+def sinDFT(y,t,n): #computes the sin terms for the DFT
+  comparisonValues = np.sin(n*t*2*np.pi/L) #creates an array of points that follow a perfect sin wave of frequency n
+  dotprod = np.dot(y,comparisonValues) #take the dot product between our points and the actual waves
+  norm = np.dot(comparisonValues,comparisonValues) #find the total sum under the points are, for normalization
   return dotprod/norm
 
-def cosDFT(y,t,n):
-  comparisonValues = np.cos(n*t*2*np.pi/L)
-  dotprod = np.dot(y,comparisonValues)
-  norm = np.dot(comparisonValues,comparisonValues)
+def cosDFT(y,t,n): #computes the cos terms for the DFT
+  comparisonValues = np.cos(n*t*2*np.pi/L) #creates an array of points that follow a perfect sin wave of frequency n
+  dotprod = np.dot(y,comparisonValues) #take the dot product between our points and the actual waves
+  norm = np.dot(comparisonValues,comparisonValues) #find the total sum under the points are, for normalization
   return dotprod/norm
 
-def constant(y,samples):
+def constant(y,samples): #finds the constant term
   return np.sum(y)/samples
 
-def DFT(y,t):
+def DFT(y,t): #computes the total DFT with sin, cos terms
   sinls,cosls = [],[]
   for n in range(1,int((len(t)+1)/2)):
     sinls.append(sinDFT(y,t,n))
     cosls.append(cosDFT(y,t,n))
   return (sinls,cosls)
 
-def fourier(t,sinterms,costerms,y,numterms):
-  total = np.zeros(len(t))
-  for i in range(numterms):
+def fourier(t,sinterms,costerms,y,numterms): #plots the fourier series using the values obtained by DFT
+  total = np.zeros(len(t)) #creates a zero vector of length of t
+  for i in range(numterms): #iterate through every term in the fourier series, adding it to the total (does the sum)
     total += sinterms[i]*np.sin((i+1)*t*(2*np.pi/L)) + costerms[i]*np.cos((i+1)*t*(2*np.pi/L))
-  total += constant(y,samples)
+  total += constant(y,samples) #adds the constant term to the sum
   return total
 
 #compute the values using DFT
-ySins = DFT(yPoints,t)[0]
-yCoses = DFT(yPoints,t)[1]
-xSins = DFT(xPoints,t)[0]
-xCoses = DFT(xPoints,t)[1]
+ySins = DFT(yPoints,t)[0] #finds every sin term for y(t)
+yCoses = DFT(yPoints,t)[1] #finds every cos term for y(t)
+xSins = DFT(xPoints,t)[0] #finds every sin term for x(t)
+xCoses = DFT(xPoints,t)[1] #finds every cos term for x(t)
 
-tVals = np.linspace(1,samples,10000)
+tVals = np.linspace(1,samples,10000) #parameteric t-values for plotting purposes
 
 #axes
 xmin = np.min(xPoints)-np.mean(xPoints)/10
